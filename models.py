@@ -22,7 +22,6 @@ class Character(Base):
 
     id = mapped_column(Integer, primary_key=True)
     name: Mapped[str]
-    age: Mapped[int]
     nation: Mapped[str]
     bending_type: Mapped[str | None]
     role: Mapped[str]
