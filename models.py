@@ -19,8 +19,10 @@ class User(Base):
 
 class Character(Base):
     __tablename__ = "character"
+
     id = mapped_column(Integer, primary_key=True)
     name: Mapped[str]
+    age: Mapped[int]
     nation: Mapped[str]
     bending_type: Mapped[str | None]
     role: Mapped[str]
