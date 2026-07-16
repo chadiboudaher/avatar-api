@@ -34,3 +34,7 @@ All information is collected for `Avatar Wiki` website.
 ### 3.1 Test fake database
 
 create a `test_characters.py` file to test the validity of the fake database.
+
+## The importance of `model_response`
+
+model_response is very important because it doesn't just describe the shape, it **filter** what you return to match that shape.
