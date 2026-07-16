@@ -15,7 +15,7 @@ async def get_characters():
 @app.get("/characters/{character_id}", response_model=CharacterOut)
 async def get_character(character_id: int):
     character = next((item for item in fake_database 
-                 if item["id"] == character_id), None)
+                      if item["id"] == character_id), None)
     if character is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="Character Not Found")
@@ -33,4 +33,17 @@ async def create_character(new_character: CharacterCreate):
     character_dict = new_character.model_dump()
     character_dict["id"] = new_id
     fake_database.append(character_dict)
+    return character_dict
+
+@app.put("/characters/{character_id}", response_model=CharacterOut)
+async def update_character(character_id: int,
+                           update_character: CharacterCreate):
+    index = next((i for i, item in enumerate(fake_database) 
+                      if item["id"] == character_id), None)
+    if index is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Character Not Found")
+    character_dict = update_character.model_dump()
+    character_dict["id"] = character_id
+    fake_database[index] = character_dict
     return character_dict
