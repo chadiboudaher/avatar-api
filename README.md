@@ -13,10 +13,20 @@ This project will contain one model.
 - show: string (ATLA, TLOK)
 - first_appearance: string | Optional
 
-# 2. Create schemas using pydantic library
+## 2. Create schemas using pydantic library
 
 Three basic schemas are created as a basis for the avatar api.
 
 - `CharacterBase` - Base model
 - `CharacterCreate` - Inherit from base, used for POST request bodies (no id).
 - `CharacterOut` - Inherit from base, adds `id`. it is used for **responses**.
+
+## 3. Create fake dataset
+
+Fake dataset is created as a first step into created a simple api before moving on into real database using `sqlalchemy`.
+
+All information is collected for `Avatar Wiki` website.
+
+### Notes
+
+1. `first_appearance`: This field should contain a proper string pattern.
