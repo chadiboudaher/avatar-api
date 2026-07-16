@@ -19,3 +19,7 @@ class CharacterBase(BaseModel):
     is_bender: bool
     show: Show
     first_appearance: Optional[str] = None
+
+class CharacterCreate(CharacterBase):
+    pass
+
