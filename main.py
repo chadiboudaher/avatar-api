@@ -47,3 +47,13 @@ async def update_character(character_id: int,
     character_dict["id"] = character_id
     fake_database[index] = character_dict
     return character_dict
+
+@app.delete("/characters/{character_id}", response_model=CharacterOut)
+async def delete_character(character_id: int):
+    index = next((i for i, item in enumerate(fake_database)
+                  if item["id"] == character_id), None)
+    if index is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Character Not Found")
+    deleted = fake_database.pop(index)
+    return deleted
