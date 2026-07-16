@@ -23,3 +23,5 @@ class CharacterBase(BaseModel):
 class CharacterCreate(CharacterBase):
     pass
 
+class CharacterOut(CharacterBase):
+    id: int
