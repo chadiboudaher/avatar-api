@@ -30,3 +30,7 @@ All information is collected for `Avatar Wiki` website.
 ### Notes
 
 1. `first_appearance`: This field should contain a proper string pattern.
+
+### 3.1 Test fake database
+
+create a `test_characters.py` file to test the validity of the fake database.
