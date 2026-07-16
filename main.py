@@ -20,3 +20,16 @@ async def get_character(character_id: int):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="Character Not Found")
     return character
+
+@app.post("/characters", response_model=CharacterOut)
+async def create_character(new_character: CharacterCreate):
+    name_character = next((c for c in
+                           fake_database if c['name'] == new_character.name), None)
+    if name_character is not None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="Character already exist")
+    new_id = max(c["id"] for c in fake_database) + 1
+    character_dict = new_character.model_dump()
+    character_dict["id"] = new_id
+    fake_database.append(character_dict)
+    return character_dict
