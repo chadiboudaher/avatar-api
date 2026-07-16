@@ -48,12 +48,24 @@ async def update_character(character_id: int,
     fake_database[index] = character_dict
     return character_dict
 
-@app.delete("/characters/{character_id}", response_model=CharacterOut)
+# Option 1 - Return the deleted item
+# @app.delete("/characters/{character_id}", response_model=CharacterOut)
+# async def delete_character(character_id: int):
+#     index = next((i for i, item in enumerate(fake_database)
+#                   if item["id"] == character_id), None)
+#     if index is None:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+#                             detail="Character Not Found")
+#     deleted = fake_database.pop(index)
+#     return deleted
+
+# Option 2 - Return 204 (NO CONTENT) status code
+@app.delete("/characters/{character_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_character(character_id: int):
     index = next((i for i, item in enumerate(fake_database)
                   if item["id"] == character_id), None)
     if index is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="Character Not Found")
-    deleted = fake_database.pop(index)
-    return deleted
+    fake_database.pop(index)
+    return None
