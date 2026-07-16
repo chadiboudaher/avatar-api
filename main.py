@@ -26,6 +26,7 @@ async def create_character(new_character: CharacterCreate):
     name_character = next((c for c in
                            fake_database if c['name'] == new_character.name), None)
     if name_character is not None:
+        # status 409_CONFLICT can also be used
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="Character already exist")
     new_id = max(c["id"] for c in fake_database) + 1
