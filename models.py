@@ -1,27 +1,15 @@
-from pydantic import BaseModel
-from typing import Optional, Annotated
-from enum import Enum
+from database import Base
+from enums import Nation, Show
+from sqlalchemy import Enum as SQLEnum
+from sqlalchemy.orm import Mapped, mapped_column
 
-class Nation(Enum):
-    EARTH = "earth"
-    WATER = "water"
-    FIRE = "fire"
-    AIR = "air"
+class Character(Base):
+    __tablename__ = "characters"
 
-class Show(Enum):
-    ATLA = "Avatar The Last Airbender"
-    LOK = "Legend of Korra"
-
-class CharacterBase(BaseModel):
-    name: str
-    bio: Optional[str] = None
-    nation: Nation
-    is_bender: bool
-    show: Show
-    first_appearance: Optional[str] = None
-
-class CharacterCreate(CharacterBase):
-    pass
-
-class CharacterOut(CharacterBase):
-    id: int
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(unique=True)
+    bio: Mapped[str] = mapped_column(nullable=True)
+    nation: Mapped[Nation] = mapped_column(SQLEnum(Nation))
+    is_bender: Mapped[bool]
+    show: Mapped[Show] = mapped_column(SQLEnum(Show))
+    first_appearance: Mapped[str] = mapped_column(nullable=True)
