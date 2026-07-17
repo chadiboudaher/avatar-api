@@ -13,3 +13,7 @@ app = FastAPI(title="Avatar API")
 async def root():
     return {"message": "Hello"}
 
+@app.get("/characters")
+async def get_all(db: Session = Depends(get_db)):
+    characters = db.query(Character).all()
+    return characters
