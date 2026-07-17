@@ -53,3 +53,14 @@ async def update_character(character_id: int,
     db.commit()
     db.refresh(existing)
     return existing
+
+@app.delete("/characters/{character_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_character(character_id: int,
+                           db: Session = Depends(get_db)):
+    existing = db.query(Character).filter(Character.id == character_id).first()
+    if existing is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Character Not Found")
+    db.delete(existing)
+    db.commit()
+    return None
