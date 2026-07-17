@@ -13,7 +13,16 @@ app = FastAPI(title="Avatar API")
 async def root():
     return {"message": "Hello"}
 
-@app.get("/characters")
+@app.get("/characters", response_model=list[CharacterOut])
 async def get_all(db: Session = Depends(get_db)):
     characters = db.query(Character).all()
     return characters
+
+@app.get("/characters/{character_id}", response_model=CharacterOut)
+async def get_characters(character_id: int,
+                         db: Session = Depends(get_db)):
+    character = db.query(Character).filter(Character.id == character_id).first()
+    if character is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Character Not Found")
+    return character
