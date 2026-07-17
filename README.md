@@ -52,7 +52,7 @@ model_response is very important because it doesn't just describe the shape, it 
 - Setup connection to the database using `create_engine` function.
 - Add `check_same_thread` argument and set it to **False** to use the same SQLite database in different threads. This is necessary as one single request could use more than one thread (for example dependencies) [FastAPI Docs](https://fastapi.tiangolo.com/tutorial/sql-databases/#create-an-engine).
 
-## Create SessionLocal
+## 2. Create SessionLocal
 
 - `autoflush=False`: Prevents the database from saving changes automatically after every single operation. Instead, the session waits for you to explicitly call `db.commit()`. If something goes wrong, you can run `db.rollback()` to undo uncommitted actions.
 - `autocommit=False`: Prevents the session from automatically pushing pending changes to the database before runnning a read query.
