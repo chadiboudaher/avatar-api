@@ -26,3 +26,12 @@ async def get_characters(character_id: int,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="Character Not Found")
     return character
+
+@app.post("/characters", response_model=CharacterOut)
+async def create_character(character: CharacterCreate,
+                           db: Session = Depends(get_db)):
+    new_character = Character(**character.model_dump())
+    db.add(new_character)
+    db.commit()
+    db.refresh(new_character)
+    return new_character
