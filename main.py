@@ -30,6 +30,10 @@ async def get_characters(character_id: int,
 @app.post("/characters", response_model=CharacterOut)
 async def create_character(character: CharacterCreate,
                            db: Session = Depends(get_db)):
+    existing = db.query(Character).filter(Character.name == character.name).first()
+    if existing is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="Character Already exists")
     new_character = Character(**character.model_dump())
     db.add(new_character)
     db.commit()
