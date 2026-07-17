@@ -1,5 +1,7 @@
 # Avatar API
 
+# Phase 1 - fake List database
+
 ## 1. Design data
 
 This project will contain one model.
@@ -42,3 +44,10 @@ model_response is very important because it doesn't just describe the shape, it 
 ## 5. CRUD Operations
 
 `GET`, `POST`, `PUT`, `DELETE` are the most simple operations in any API.
+
+# Phase 2 - Swapping fake list for a real SQLite database
+
+## 1. Create `database.py`
+
+- Setup connection to the database using `create_engine` function.
+- Add `check_same_thread` argument and set it to **False** to use the same SQLite database in different threads. This is necessary as one single request could use more than one thread (for example dependencies) [FastAPI Docs](https://fastapi.tiangolo.com/tutorial/sql-databases/#create-an-engine).
