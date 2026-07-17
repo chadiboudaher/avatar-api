@@ -39,3 +39,17 @@ async def create_character(character: CharacterCreate,
     db.commit()
     db.refresh(new_character)
     return new_character
+
+@app.put("/characters/{character_id}", response_model=CharacterOut)
+async def update_character(character_id: int,
+                           character: CharacterCreate,
+                           db: Session = Depends(get_db)):
+    existing = db.query(Character).filter(Character.id == character_id).first()
+    if existing is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Character Not Found")
+    for key, value in character.model_dump().items():
+        setattr(existing, key, value)
+    db.commit()
+    db.refresh(existing)
+    return existing
