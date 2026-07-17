@@ -38,3 +38,7 @@ create a `test_characters.py` file to test the validity of the fake database.
 ## 4. The importance of `model_response`
 
 model_response is very important because it doesn't just describe the shape, it **filter** what you return to match that shape.
+
+## 5. CRUD Operations
+
+`GET`, `POST`, `PUT`, `DELETE` are the most simple operations in any API.
