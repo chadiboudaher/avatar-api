@@ -54,6 +54,6 @@ model_response is very important because it doesn't just describe the shape, it 
 
 ## Create SessionLocal
 
-- `autoFlush=False`: Prevents the database from saving changes automatically after every single operation. Instead, the session waits for you to explicitly call `db.commit()`. If something goes wrong, you can run `db.rollback()` to undo uncommitted actions.
+- `autoflush=False`: Prevents the database from saving changes automatically after every single operation. Instead, the session waits for you to explicitly call `db.commit()`. If something goes wrong, you can run `db.rollback()` to undo uncommitted actions.
 - `autocommit=False`: Prevents the session from automatically pushing pending changes to the database before runnning a read query.
 - `bind=engine`: Connects the `SessionLocal` class to the database configuration.

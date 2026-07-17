@@ -7,7 +7,7 @@ engine = create_engine("sqlite:///./avatar.db",
                        })
 
 SessionLocal = sessionmaker(autocommit=False,
-                            autoFlush=False,
+                            autoflush=False,
                             bind=engine)
 
 """
