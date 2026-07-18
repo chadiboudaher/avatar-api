@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
 from enums import Show
 
@@ -6,7 +6,7 @@ class CharacterBase(BaseModel):
     # allows pydantic models to read data from objects attributes
     # Instead of just dictionaries.
     model_config = ConfigDict(from_attributes=True)
-    name: str
+    name: str = Field(min_length=1, max_length=100)
     bio: Optional[str] = None
     nation_id: int
     is_bender: bool
