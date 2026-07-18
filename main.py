@@ -1,5 +1,6 @@
 from typing import Optional
 from fastapi import FastAPI, status, HTTPException, Depends
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 # from sqlalchemy import func
 
@@ -10,6 +11,11 @@ from schemas import CharacterOut, CharacterCreate, NationOut
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Avatar API")
+
+@app.exception_handler(Exception)
+async def generic_handler(request, exc):
+    return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        content={"detail": "An Unexcepted error occured."})
 
 @app.get("/")
 async def root():
