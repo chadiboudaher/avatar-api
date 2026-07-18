@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from database import engine, get_db, Base
 from models import Character, Nation
-from schemas import CharacterOut, CharacterCreate
+from schemas import CharacterOut, CharacterCreate, NationOut
 
 Base.metadata.create_all(bind=engine)
 
@@ -21,7 +21,7 @@ async def create_nations(db: Session = Depends(get_db)):
     db.commit()
     return None
 
-@app.get("/nations", tags=["Nations"])
+@app.get("/nations", response_model=list[NationOut], tags=["Nations"])
 async def get_nations(db: Session = Depends(get_db)):
     nations = db.query(Nation).all()
     return nations
