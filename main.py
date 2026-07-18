@@ -59,7 +59,7 @@ async def create_character(character: CharacterCreate,
                            db: Session = Depends(get_db)):
     existing = db.query(Character).filter(Character.name == character.name).first()
     if existing is not None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail="Character Already exists")
     nation = db.query(Nation).filter(Nation.id == character.nation_id).first()
     if nation is None:
