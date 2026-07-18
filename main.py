@@ -21,6 +21,11 @@ async def create_nations(db: Session = Depends(get_db)):
     db.commit()
     return None
 
+@app.get("/nations", tags=["Nations"])
+async def get_nations(db: Session = Depends(get_db)):
+    nations = db.query(Nation).all()
+    return nations
+
 @app.get("/characters", response_model=list[CharacterOut], tags=["Characters"])
 async def get_all(db: Session = Depends(get_db)):
     characters = db.query(Character).all()
