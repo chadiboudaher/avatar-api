@@ -61,6 +61,10 @@ async def create_character(character: CharacterCreate,
     if existing is not None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="Character Already exists")
+    nation = db.query(Nation).filter(Nation.id == character.nation_id).first()
+    if nation is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Nation Not Found")
     new_character = Character(**character.model_dump())
     db.add(new_character)
     db.commit()
