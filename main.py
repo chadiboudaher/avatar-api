@@ -79,6 +79,10 @@ async def update_character(character_id: int,
     if existing is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail="Character Not Found")
+    nation = db.query(Nation).filter(Nation.id == character.nation_id).first()
+    if nation is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail="Nation Not Found")
     for key, value in character.model_dump().items():
         setattr(existing, key, value)
     db.commit()
