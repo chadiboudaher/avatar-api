@@ -66,4 +66,9 @@ Some Notes:
 
 - `.filter()`: is used to check a condition, `.first()` is added to provide a **None** option that can be used to raise exception.
 - When creating a new character, `.add()` is used to add to the database, and `.refresh()` is used to fetch the current state like (id, etc.).
--
+
+# Phase 4 - Proper error handling
+
+## 1. Create custom exception handler
+
+A global handler catches anything that slips through all your specific `HTTPException`s and turns it into clean, generic response.
