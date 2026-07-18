@@ -1,5 +1,7 @@
+from typing import Optional
 from fastapi import FastAPI, status, HTTPException, Depends
 from sqlalchemy.orm import Session
+# from sqlalchemy import func
 
 from database import engine, get_db, Base
 from models import Character, Nation
@@ -27,8 +29,20 @@ async def get_nations(db: Session = Depends(get_db)):
     return nations
 
 @app.get("/characters", response_model=list[CharacterOut], tags=["Characters"])
-async def get_all(db: Session = Depends(get_db)):
-    characters = db.query(Character).all()
+async def get_all(nation: Optional[str] = None,
+                  is_bender: Optional[bool] = None,
+                  name: Optional[str] = None,
+                  skip: int = 0,
+                  limit: int = 100,
+                  db: Session = Depends(get_db)):
+    query = db.query(Character)
+    if nation is not None:
+        query = query.join(Nation).filter(Nation.name == nation)
+    if is_bender is not None:
+        query = query.filter(Character.is_bender == is_bender)
+    if name is not None:
+        query = query.filter(Character.name.ilike(f"%{name}%"))
+    characters = query.offset(skip).limit(limit).all()
     return characters
 
 @app.get("/characters/{character_id}", response_model=CharacterOut, tags=["Characters"])
