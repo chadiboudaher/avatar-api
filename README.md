@@ -57,3 +57,13 @@ model_response is very important because it doesn't just describe the shape, it 
 - `autoflush=False`: Prevents the database from saving changes automatically after every single operation. Instead, the session waits for you to explicitly call `db.commit()`. If something goes wrong, you can run `db.rollback()` to undo uncommitted actions.
 - `autocommit=False`: Prevents the session from automatically pushing pending changes to the database before runnning a read query.
 - `bind=engine`: Connects the `SessionLocal` class to the database configuration.
+
+## 3. Create Endpoint
+
+In this step, CRUD operations are implemented with connection to the database, and tested using `Swagger UI`.
+
+Some Notes:
+
+- `.filter()`: is used to check a condition, `.first()` is added to provide a **None** option that can be used to raise exception.
+- When creating a new character, `.add()` is used to add to the database, and `.refresh()` is used to fetch the current state like (id, etc.).
+-
