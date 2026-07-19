@@ -8,13 +8,11 @@ from sqlalchemy.orm import Session
 from database import engine, get_db, Base
 from models import Character, Nation, User
 from schemas import CharacterOut, CharacterCreate, NationOut, UserCreate, UserOut
-from auth import hash_password, create_access_token, verify_password
+from auth import hash_password, create_access_token, verify_password, SECRET_KEY, ALGORITHM
 import jwt
 from jwt import PyJWTError
 
-SECRET_KEY = "your-secret-key-change-this"
-ALGORITHM = "HS256"
-ACESS_TOKEN_EXPIRE_MINUTES = 30
+
 
 Base.metadata.create_all(bind=engine)
 
@@ -42,7 +40,7 @@ def get_current_user(token: str = Depends(oauth2_scheme),
     )
 
     try:
-        payload = jwt.encode(token, SECRET_KEY, algorithm=ALGORITHM)
+        payload = jwt.decode(token, SECRET_KEY, algorithm=ALGORITHM)
         username = payload.get("sub")
         if username is None:
             raise credentials_exception
