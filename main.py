@@ -9,11 +9,18 @@ from database import engine, get_db, Base
 from models import Character, Nation, User
 from schemas import CharacterOut, CharacterCreate, NationOut, UserCreate, UserOut
 from auth import hash_password, create_access_token, verify_password
+import jwt
+from jwt import PyJWTError
 
+SECRET_KEY = "your-secret-key-change-this"
+ALGORITHM = "HS256"
+ACESS_TOKEN_EXPIRE_MINUTES = 30
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Avatar API")
+
+oauth2_scheme = OAuth2PasswordRequestForm(tokenUrl="login")
 
 @app.exception_handler(Exception)
 async def generic_handler(request, exc):
@@ -24,6 +31,27 @@ async def generic_handler(request, exc):
 async def root():
     return {"message": "Hello"}
 
+# --------- CREATE DEPENDENCY FOR AUTHORIZED USERS ---------
+
+def get_current_user(token: str = Depends(oauth2_scheme),
+                     db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    try:
+        payload = jwt.encode(token, SECRET_KEY, algorithm=ALGORITHM)
+        username = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+    except PyJWTError:
+        raise credentials_exception
+    user = db.query(User).filter(User.username == username).first()
+    if user is None:
+        raise credentials_exception
+    return user
 # --------- LOGIN ---------
 
 @app.post("/register", response_model=UserOut,
