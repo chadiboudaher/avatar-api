@@ -1,13 +1,15 @@
 from typing import Optional
 from fastapi import FastAPI, status, HTTPException, Depends
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 # from sqlalchemy import func
 
 from database import engine, get_db, Base
 from models import Character, Nation, User
 from schemas import CharacterOut, CharacterCreate, NationOut, UserCreate, UserOut
-from auth import hash_password
+from auth import hash_password, create_access_token, verify_password
+
 
 Base.metadata.create_all(bind=engine)
 
@@ -39,8 +41,15 @@ async def register(user: UserCreate,
     db.refresh(new_user)
     return new_user
 
-# @app.get("/login", response_model=UserOut, tags=["Auth"])
-# async def login()
+@app.post("/login", tags=["Auth"])
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    existing = db.query(User).filter(User.username == form_data.username).first()
+    if existing is None or not verify_password(form_data.password, existing.hashed_password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail="Username or password are wrong! Try again")
+    token = create_access_token(data={"sub": existing.username})
+    return {"access_token": token, "token_type": "bearer"}
+
 
 
 
