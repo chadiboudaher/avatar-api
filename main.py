@@ -5,8 +5,9 @@ from sqlalchemy.orm import Session
 # from sqlalchemy import func
 
 from database import engine, get_db, Base
-from models import Character, Nation
-from schemas import CharacterOut, CharacterCreate, NationOut
+from models import Character, Nation, User
+from schemas import CharacterOut, CharacterCreate, NationOut, UserCreate, UserOut
+from auth import hash_password
 
 Base.metadata.create_all(bind=engine)
 
@@ -21,6 +22,31 @@ async def generic_handler(request, exc):
 async def root():
     return {"message": "Hello"}
 
+# --------- LOGIN ---------
+
+@app.post("/register", response_model=UserOut,
+          status_code=status.HTTP_201_CREATED, tags=["Auth"])
+async def register(user: UserCreate,
+                   db: Session = Depends(get_db)):
+    existing = db.query(User).filter(User.username == user.username).first()
+    if existing is not None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="Username Already taken")
+    new_user = User(username=user.username,
+                    hashed_password=hash_password(user.password))
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+# @app.get("/login", response_model=UserOut, tags=["Auth"])
+# async def login()
+
+
+
+
+# --------- NATION ---------
+
 @app.post("/nations", status_code=status.HTTP_201_CREATED, tags=["Nations"])
 async def create_nations(db: Session = Depends(get_db)):
     nation_names = ['water', "earth", "fire", "air"]
@@ -33,6 +59,9 @@ async def create_nations(db: Session = Depends(get_db)):
 async def get_nations(db: Session = Depends(get_db)):
     nations = db.query(Nation).all()
     return nations
+
+
+# --------- CHARACTERS ---------
 
 @app.get("/characters", response_model=list[CharacterOut], tags=["Characters"])
 async def get_all(nation: Optional[str] = None,
