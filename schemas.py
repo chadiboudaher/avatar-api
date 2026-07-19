@@ -30,3 +30,13 @@ class CharacterOut(BaseModel):
     is_bender: bool
     show: Show
     first_appearance: Optional[str] = None
+
+
+class UserCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=50)
+    password: str = Field(min_length=6)
+
+class UserOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    username: str
