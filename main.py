@@ -106,7 +106,8 @@ async def get_all(nation: Optional[str] = None,
                   name: Optional[str] = None,
                   skip: int = 0,
                   limit: int = 100,
-                  db: Session = Depends(get_db)):
+                  db: Session = Depends(get_db),
+                  current_user: User = Depends(get_current_user)):
     query = db.query(Character)
     if nation is not None:
         query = query.join(Nation).filter(Nation.name == nation)
@@ -119,7 +120,8 @@ async def get_all(nation: Optional[str] = None,
 
 @app.get("/characters/{character_id}", response_model=CharacterOut, tags=["Characters"])
 async def get_characters(character_id: int,
-                         db: Session = Depends(get_db)):
+                         db: Session = Depends(get_db),
+                         current_user: User = Depends(get_current_user)):
     character = db.query(Character).filter(Character.id == character_id).first()
     if character is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -128,7 +130,8 @@ async def get_characters(character_id: int,
 
 @app.post("/characters", response_model=CharacterOut, tags=["Characters"])
 async def create_character(character: CharacterCreate,
-                           db: Session = Depends(get_db)):
+                           db: Session = Depends(get_db),
+                           current_user: User = Depends(get_current_user)):
     existing = db.query(Character).filter(Character.name == character.name).first()
     if existing is not None:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
@@ -146,7 +149,8 @@ async def create_character(character: CharacterCreate,
 @app.put("/characters/{character_id}", response_model=CharacterOut, tags=["Characters"])
 async def update_character(character_id: int,
                            character: CharacterCreate,
-                           db: Session = Depends(get_db)):
+                           db: Session = Depends(get_db),
+                           current_user: User = Depends(get_current_user)):
     existing = db.query(Character).filter(Character.id == character_id).first()
     if existing is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -163,7 +167,8 @@ async def update_character(character_id: int,
 
 @app.delete("/characters/{character_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["Characters"])
 async def delete_character(character_id: int,
-                           db: Session = Depends(get_db)):
+                           db: Session = Depends(get_db),
+                           current_user: User = Depends(get_current_user)):
     existing = db.query(Character).filter(Character.id == character_id).first()
     if existing is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
