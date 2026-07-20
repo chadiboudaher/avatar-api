@@ -5,7 +5,7 @@ from typing import Optional
 from schemas import CharacterOut, CharacterCreate
 from models import Character, Nation, User
 from fastapi.security import OAuth2PasswordBearer
-from auth import hash_password, create_access_token, verify_password, SECRET_KEY, ALGORITHM
+from config import settings
 import jwt
 from jwt import PyJWTError
 
@@ -21,7 +21,7 @@ def get_current_user(token: str = Depends(oauth2_scheme),
     )
 
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
         username = payload.get("sub")
         if username is None:
             raise credentials_exception

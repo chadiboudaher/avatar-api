@@ -5,11 +5,11 @@ from typing import Optional
 from models import Nation
 from schemas import NationOut
 
-router = APIRouter(prefix="/characters", tags=["nations"])
+router = APIRouter(tags=["Nations"])
 
 
 
-@router.post("/nations", status_code=status.HTTP_201_CREATED, tags=["Nations"])
+@router.post("/nations", status_code=status.HTTP_201_CREATED)
 async def create_nations(db: Session = Depends(get_db)):
     nation_names = ['water', "earth", "fire", "air"]
     nations = [Nation(name=n) for n in nation_names]
@@ -17,7 +17,7 @@ async def create_nations(db: Session = Depends(get_db)):
     db.commit()
     return None
 
-@router.get("/nations", response_model=list[NationOut], tags=["Nations"])
+@router.get("/nations", response_model=list[NationOut])
 async def get_nations(db: Session = Depends(get_db)):
     nations = db.query(Nation).all()
     return nations

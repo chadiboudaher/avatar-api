@@ -1,16 +1,16 @@
 from fastapi import Depends, APIRouter, HTTPException, status
 from sqlalchemy.orm import Session
 from database import get_db
-from auth import hash_password, create_access_token, verify_password, SECRET_KEY, ALGORITHM
+from auth import hash_password, create_access_token, verify_password
 from models import User
 from schemas import UserCreate, UserOut
 from fastapi.security import OAuth2PasswordRequestForm
 
-router = APIRouter(prefix="/characters", tags=["auth"])
+router = APIRouter(tags=["Auth"])
 
 
 @router.post("/register", response_model=UserOut,
-          status_code=status.HTTP_201_CREATED, tags=["Auth"])
+          status_code=status.HTTP_201_CREATED)
 async def register(user: UserCreate,
                    db: Session = Depends(get_db)):
     existing = db.query(User).filter(User.username == user.username).first()
@@ -24,7 +24,7 @@ async def register(user: UserCreate,
     db.refresh(new_user)
     return new_user
 
-@router.post("/login", tags=["Auth"])
+@router.post("/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     existing = db.query(User).filter(User.username == form_data.username).first()
     if existing is None or not verify_password(form_data.password, existing.hashed_password):
