@@ -23,7 +23,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 @app.exception_handler(Exception)
 async def generic_handler(request, exc):
     return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        content={"detail": "An Unexcepted error occured."})
+                        content={"detail": "An Unexpected error occured."})
 
 @app.get("/")
 async def root():
@@ -40,7 +40,7 @@ def get_current_user(token: str = Depends(oauth2_scheme),
     )
 
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithm=ALGORITHM)
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")
         if username is None:
             raise credentials_exception
