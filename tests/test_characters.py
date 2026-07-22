@@ -56,3 +56,11 @@ def test_register_login_and_access_protected_route():
     # Access protected route
     response = client.get("/characters", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
+
+def test_register_password_length():
+    register_response = client.post("/register", json={
+        "username": "testuser",
+        "password": "test"
+    })
+    assert register_response.status_code == 422
+
