@@ -23,7 +23,11 @@ def override_get_db():
 
 app.dependency_overrides[get_db] = override_get_db
 
-Base.metadata.create_all(bind=engine)
+@pytest.fixture(autouse=True)
+def setup_and_teardown_db():
+    Base.metadata.create_all(bind=engine)
+    yield
+    Base.metadata.drop_all(bind=engine)
 client = TestClient(app)
 
 def test_get_characters_empty():
