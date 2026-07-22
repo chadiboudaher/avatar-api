@@ -33,7 +33,7 @@ def get_current_user(token: str = Depends(oauth2_scheme),
     return user
 
 
-@router.get("/characters", response_model=list[CharacterOut])
+@router.get("", response_model=list[CharacterOut])
 async def get_all(nation: Optional[str] = None,
                   is_bender: Optional[bool] = None,
                   name: Optional[str] = None,
@@ -51,7 +51,7 @@ async def get_all(nation: Optional[str] = None,
     characters = query.offset(skip).limit(limit).all()
     return characters
 
-@router.get("/characters/{character_id}", response_model=CharacterOut)
+@router.get("/{character_id}", response_model=CharacterOut)
 async def get_characters(character_id: int,
                          db: Session = Depends(get_db),
                          current_user: User = Depends(get_current_user)):
@@ -61,7 +61,7 @@ async def get_characters(character_id: int,
                             detail="Character Not Found")
     return character
 
-@router.post("/characters", response_model=CharacterOut)
+@router.post("", response_model=CharacterOut)
 async def create_character(character: CharacterCreate,
                            db: Session = Depends(get_db),
                            current_user: User = Depends(get_current_user)):
@@ -79,7 +79,7 @@ async def create_character(character: CharacterCreate,
     db.refresh(new_character)
     return new_character
 
-@router.put("/characters/{character_id}", response_model=CharacterOut)
+@router.put("/{character_id}", response_model=CharacterOut)
 async def update_character(character_id: int,
                            character: CharacterCreate,
                            db: Session = Depends(get_db),
@@ -98,7 +98,7 @@ async def update_character(character_id: int,
     db.refresh(existing)
     return existing
 
-@router.delete("/characters/{character_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{character_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_character(character_id: int,
                            db: Session = Depends(get_db),
                            current_user: User = Depends(get_current_user)):
