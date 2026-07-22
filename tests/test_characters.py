@@ -75,3 +75,12 @@ def test_register_duplicate_username():
     })
 
     assert register_response.status_code == 400
+
+def test_get_nonexistent_character_404():
+    # Need a valid token first
+    client.post("/register", json={"username": "testuser2", "password": "testpass123"})
+    login_response = client.post("/login", data={"username": "testuser2", "password": "testpass123"})
+    token = login_response.json()["access_token"]
+
+    response = client.get("/characters/999", headers={"Authorization": f"Bearer {token}"})
+    assert response.status_code == 404
