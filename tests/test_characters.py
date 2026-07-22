@@ -64,3 +64,14 @@ def test_register_password_length():
     })
     assert register_response.status_code == 422
 
+def test_register_duplicate_username():
+    client.post("/register", json={
+        "username": "dupe",
+        "password": "testpass123"
+    })
+    register_response = client.post("/register", json={
+        "username": "dupe",
+        "password": "testpass123"
+    })
+
+    assert register_response.status_code == 400
